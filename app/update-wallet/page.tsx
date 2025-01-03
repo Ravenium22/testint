@@ -1,6 +1,7 @@
 // app/update-wallet/page.tsx
 "use client";
 
+import { useEffect } from "react";
 import { usePrivy } from "@privy-io/react-auth";
 import { useAccount } from "wagmi";
 import { useSearchParams } from "next/navigation";
@@ -29,7 +30,7 @@ export default function UpdateWallet() {
     fetcher,
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (
       data &&
       searchParams.get("token") &&
