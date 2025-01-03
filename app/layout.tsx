@@ -1,4 +1,5 @@
-/* eslint-disable @next/next/no-head-element */
+// app/layout.tsx
+"use client";
 
 import { Web3Provider } from "@/components/web3-provider";
 import { Metadata } from "next";
@@ -8,7 +9,6 @@ import "../styles/globals.css";
 import "../styles/tailwind.css";
 
 export const metadata: Metadata = {
-  // metadataBase: new URL(""),
   title: "",
   description: "",
   openGraph: {
@@ -33,7 +33,6 @@ export default function RootLayout({
 }) {
   return (
     <html>
-      <head></head>
       <body>
         <Toaster />
         <Web3Provider>
