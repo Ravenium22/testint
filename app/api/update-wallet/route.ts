@@ -1,3 +1,4 @@
+// app/api/update-wallet/route.ts
 import { supabase } from "@/lib/supabase";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";

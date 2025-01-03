@@ -1,15 +1,8 @@
-// app/game/page.tsx
-"use client";
-
-import LeaguePageWrapper from "@/components/LeaguePageWrapper";
+import LeaguePage from "@/components/LeaguePage";
 import React from "react";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
-export const fetchCache = "force-no-store";
-
-const Game = () => {
-  return <LeaguePageWrapper />;
+const league = () => {
+  return <LeaguePage />;
 };
 
-export default Game;
+export default league;

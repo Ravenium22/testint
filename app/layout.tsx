@@ -1,11 +1,14 @@
-// app/layout.tsx
-import ProvidersWrapper from "@/components/providers-wrapper";
+/* eslint-disable @next/next/no-head-element */
+
+import { Web3Provider } from "@/components/web3-provider";
 import { Metadata } from "next";
 import { Suspense } from "react";
+import { Toaster } from "sonner";
 import "../styles/globals.css";
 import "../styles/tailwind.css";
 
 export const metadata: Metadata = {
+  // metadataBase: new URL(""),
   title: "",
   description: "",
   openGraph: {
@@ -30,12 +33,14 @@ export default function RootLayout({
 }) {
   return (
     <html>
+      <head></head>
       <body>
-        <Suspense fallback={<div>Loading...</div>}>
-          <ProvidersWrapper>
+        <Toaster />
+        <Web3Provider>
+          <Suspense fallback={<div>Loading...</div>}>
             <div className="mx-auto">{children}</div>
-          </ProvidersWrapper>
-        </Suspense>
+          </Suspense>
+        </Web3Provider>
       </body>
     </html>
   );

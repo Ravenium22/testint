@@ -13,7 +13,7 @@ import {
   hasPlayedInLast24Hours,
 } from "@/lib/utils";
 import { usePrivy } from "@privy-io/react-auth";
-import dynamic from 'next/dynamic';
+import Lottie from "lottie-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -22,14 +22,6 @@ import { FaXTwitter } from "react-icons/fa6";
 import { toast } from "sonner";
 import useSWR from "swr";
 import { useAccount } from "wagmi";
-
-// Dynamic imports for browser-dependent components
-const DynamicLottie = dynamic(() => import('lottie-react'), { 
-  ssr: false,
-  loading: () => <div className="h-[550px] w-[550px]" /> 
-});
-
-// Import animation data
 import animationData from "../public/assets/bera.json";
 
 const LeaguePage = () => {
@@ -278,7 +270,7 @@ const LeaguePage = () => {
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                     </p> */}
                     <div className="absolute bottom-[-20px]">
-                      <DynamicLottie
+                      <Lottie
                         animationData={animationData}
                         loop={true}
                         autoplay={true}
@@ -390,7 +382,7 @@ const LeaguePage = () => {
                   </div>
                   <div className="mt-12 flex h-full w-full flex-col items-center justify-start rounded-xl bg-white/5">
                     <div className="absolute bottom-[-20px]">
-                      <DynamicLottie
+                      <Lottie
                         animationData={animationData}
                         loop={true}
                         autoplay={true}
