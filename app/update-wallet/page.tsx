@@ -62,7 +62,7 @@ export default function UpdateWallet() {
           toast.error("Failed to update wallet address.");
         });
     }
-  }, [address, data, searchParams]);
+  }, [address, data, searchParams, mutate]);
 
   return (
     <div className="flex h-screen w-full flex-col items-center justify-start bg-[#275933]">
