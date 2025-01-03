@@ -1,10 +1,7 @@
 // app/layout.tsx
-"use client";
-
-import { Web3Provider } from "@/components/web3-provider";
+import ProvidersWrapper from "@/components/providers-wrapper";
 import { Metadata } from "next";
 import { Suspense } from "react";
-import { Toaster } from "sonner";
 import "../styles/globals.css";
 import "../styles/tailwind.css";
 
@@ -34,12 +31,11 @@ export default function RootLayout({
   return (
     <html>
       <body>
-        <Toaster />
-        <Web3Provider>
-          <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<div>Loading...</div>}>
+          <ProvidersWrapper>
             <div className="mx-auto">{children}</div>
-          </Suspense>
-        </Web3Provider>
+          </ProvidersWrapper>
+        </Suspense>
       </body>
     </html>
   );
