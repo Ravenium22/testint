@@ -31,38 +31,45 @@ export default function UpdateWallet() {
   );
 
   useEffect(() => {
-    if (
-      data &&
-      searchParams.get("token") &&
-      searchParams.get("discord") &&
-      address
-    ) {
-      fetch("/api/update-wallet", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          token: searchParams.get("token"),
-          discord: searchParams.get("discord"),
-          address,
-        }),
-      })
-        .then((response) => {
+    const updateWallet = async () => {
+      const token = searchParams.get("token");
+      const discord = searchParams.get("discord");
+
+      if (address && token && discord) {
+        try {
+          console.log("Attempting to update wallet with:", { token, discord, address });
+          
+          const response = await fetch("/api/update-wallet", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              token,
+              discord,
+              address,
+            }),
+          });
+
           if (!response.ok) {
-            throw new Error('Failed to update wallet');
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Failed to update wallet');
           }
-          return response.json();
-        })
-        .then(() => {
-          mutate();
+
+          const data = await response.json();
+          console.log("Update successful:", data);
+          
+          await mutate();
           toast.success("Successfully updated wallet address.");
-        })
-        .catch((err) => {
-          toast.error("Failed to update wallet address.");
-        });
-    }
-  }, [address, data, searchParams, mutate]);
+        } catch (err) {
+          console.error("Error updating wallet:", err);
+          toast.error(err instanceof Error ? err.message : "Failed to update wallet address.");
+        }
+      }
+    };
+
+    updateWallet();
+  }, [address, searchParams, mutate]);
 
   return (
     <div className="flex h-screen w-full flex-col items-center justify-start bg-[#275933]">
