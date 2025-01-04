@@ -40,70 +40,80 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Check if the address is already associated with an account
-    const { data: existingUserWithAddress } = await supabase
+    // Check if the discord_id exists first
+    const { data: existingDiscordUser } = await supabase
       .from("users")
       .select("*")
-      .eq("address", address)
+      .eq("discord_id", discord)
       .single();
 
-    if (existingUserWithAddress) {
-      // If this address exists but has no discord_id, update it
-      if (!existingUserWithAddress.discord_id) {
-        const { error: updateError } = await supabase
-          .from("users")
-          .update({ discord_id: discord })
-          .eq("address", address);
+    // If discord user exists, simply update their address
+    if (existingDiscordUser) {
+      const { error: updateError } = await supabase
+        .from("users")
+        .update({ address: address })
+        .eq("discord_id", discord);
 
-        if (updateError) {
-          console.error("Error updating user:", updateError);
-          return NextResponse.json(
-            { message: "Failed to update user" },
-            { status: 500 }
-          );
-        }
-      } else {
+      if (updateError) {
+        console.error("Error updating user:", updateError);
         return NextResponse.json(
-          { message: "This wallet address is already linked to another Discord account" },
-          { status: 400 }
+          { message: "Failed to update user's wallet address" },
+          { status: 500 }
         );
       }
     } else {
-      // Check if the discord_id exists
-      const { data: existingUserWithDiscord } = await supabase
+      // Check if address exists without discord_id
+      const { data: existingAddressUser } = await supabase
         .from("users")
         .select("*")
-        .eq("discord_id", discord)
+        .eq("address", address)
+        .is("discord_id", null)
         .single();
 
-      if (existingUserWithDiscord) {
-        // Update the existing user's address
+      if (existingAddressUser) {
+        // Update existing address entry with discord_id
         const { error: updateError } = await supabase
           .from("users")
-          .update({ address: address })
-          .eq("discord_id", discord);
+          .update({ discord_id: discord })
+          .eq("address", address)
+          .is("discord_id", null);
 
         if (updateError) {
           console.error("Error updating user:", updateError);
           return NextResponse.json(
-            { message: "Failed to update user" },
+            { message: "Failed to link discord to existing wallet" },
             { status: 500 }
           );
         }
       } else {
-        // Create new user
+        // Check if address is used by another discord user
+        const { data: addressInUse } = await supabase
+          .from("users")
+          .select("*")
+          .eq("address", address)
+          .not("discord_id", "is", null)
+          .single();
+
+        if (addressInUse) {
+          return NextResponse.json(
+            { message: "This wallet address is already linked to another Discord account" },
+            { status: 400 }
+          );
+        }
+
+        // Create new user if neither exists
         const { error: createError } = await supabase
           .from("users")
           .insert({
             address: address,
             discord_id: discord,
-            points: 0,
+            points: 0
           });
 
         if (createError) {
           console.error("Error creating user:", createError);
           return NextResponse.json(
-            { message: "Failed to create user" },
+            { message: "Failed to create new user" },
             { status: 500 }
           );
         }
